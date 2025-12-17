@@ -1,0 +1,22 @@
+Paso 1: Activa la extensión intl en php.ini
+Abre el archivo D:\xampp\php\php.ini con VS Code o Bloc de notas (como administrador para guardar).
+Busca la línea (Ctrl + F):
+ini;extension=intl
+Quita el punto y coma (;) para que quede así:
+iniextension=intl
+Guarda el archivo.
+Paso 2: Reinicia Apache en XAMPP
+Abre XAMPP Control Panel
+Detén Apache (Stop)
+Vuelve a iniciarlo (Start)
+Paso 3: Comando correcto para instalar Filament en tu Laravel 12
+En PowerShell (D:\Ctech):
+PowerShellcomposer require filament/filament:"^3.3" -W
+El -W fuerza a instalar todas las dependencias compatibles (como en la documentación oficial).
+Esto instalará Filament v3.3 o superior, que es la versión que soporta Laravel 12 al 100% (incluyendo Tailwind v3, que tu proyecto ya usa).
+Una vez instalado (tardará unos minutos):
+PowerShellphp artisan filament:install --panels
+PowerShellphp artisan make:filament-user
+(Crea el usuario admin: email admin@ctech.com, password segura)
+PowerShellphp artisan make:filament-resource Categoria --generate
+PowerShellphp artisan make:filament-resource Producto --generate
