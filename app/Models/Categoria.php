@@ -2,19 +2,27 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Categoria extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'nombre', 'slug', 'descripcion', 'icono', 'oculta', 'imagen', 'grupo', 'orden'
+        'nombre',
+        'slug',
+        'descripcion',
+        'imagen',
+        'icono',
+        'oculta',
+        'orden',
+        'grupo_categoria_id', // <-- Importante: este campo
     ];
 
-    public function productos()
+    // RELACIÓN CON EL GRUPO PRINCIPAL
+    public function grupoCategoria()
     {
-        return $this->hasMany(Producto::class);
+        return $this->belongsTo(GrupoCategoria::class, 'grupo_categoria_id');
     }
 }

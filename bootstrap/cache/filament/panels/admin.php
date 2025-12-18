@@ -4,6 +4,9 @@
     'app.filament.resources.categoria-resource.pages.create-categoria' => 'App\\Filament\\Resources\\CategoriaResource\\Pages\\CreateCategoria',
     'app.filament.resources.categoria-resource.pages.edit-categoria' => 'App\\Filament\\Resources\\CategoriaResource\\Pages\\EditCategoria',
     'app.filament.resources.categoria-resource.pages.list-categorias' => 'App\\Filament\\Resources\\CategoriaResource\\Pages\\ListCategorias',
+    'app.filament.resources.grupo-categoria-resource.pages.create-grupo-categoria' => 'App\\Filament\\Resources\\GrupoCategoriaResource\\Pages\\CreateGrupoCategoria',
+    'app.filament.resources.grupo-categoria-resource.pages.edit-grupo-categoria' => 'App\\Filament\\Resources\\GrupoCategoriaResource\\Pages\\EditGrupoCategoria',
+    'app.filament.resources.grupo-categoria-resource.pages.list-grupo-categorias' => 'App\\Filament\\Resources\\GrupoCategoriaResource\\Pages\\ListGrupoCategorias',
     'app.filament.resources.producto-resource.pages.create-producto' => 'App\\Filament\\Resources\\ProductoResource\\Pages\\CreateProducto',
     'app.filament.resources.producto-resource.pages.edit-producto' => 'App\\Filament\\Resources\\ProductoResource\\Pages\\EditProducto',
     'app.filament.resources.producto-resource.pages.list-productos' => 'App\\Filament\\Resources\\ProductoResource\\Pages\\ListProductos',
@@ -42,7 +45,11 @@
   ),
   'resources' => 
   array (
+    0 => 'App\\Filament\\Resources\\GrupoCategoriaResource',
+    1 => 'App\\Filament\\Resources\\CategoriaResource',
+    2 => 'App\\Filament\\Resources\\ProductoResource',
     'D:\\Ctech\\app\\Filament\\Resources\\CategoriaResource.php' => 'App\\Filament\\Resources\\CategoriaResource',
+    'D:\\Ctech\\app\\Filament\\Resources\\GrupoCategoriaResource.php' => 'App\\Filament\\Resources\\GrupoCategoriaResource',
     'D:\\Ctech\\app\\Filament\\Resources\\ProductoResource.php' => 'App\\Filament\\Resources\\ProductoResource',
   ),
   'resourceDirectories' => 

@@ -37,60 +37,58 @@
         </div>
     </section>
 
-    <!-- CATEGORÍAS 100% AUTOMÁTICAS CON IMAGEN Y GRUPO -->
+    <!-- CATEGORÍAS 100% DINÁMICAS DESDE LA BASE DE DATOS -->
     <section id="categorias" class="py-16">
         <h2 class="text-4xl font-bold text-center mb-12 text-green-400">Explora por Categorías</h2>
         
         @php
-            // Grupos con sus datos por defecto
-            $gruposData = [
-                'laptops'     => ['nombre' => 'Laptops',              'icono' => 'Laptop', 'imagen_default' => 'https://media.officedepot.com/images/f_auto,q_auto,e_sharpen,h_450/products/7089358/7089358'],
-                'pcs'         => ['nombre' => 'PC de Escritorio',     'icono' => 'PC',     'imagen_default' => 'https://geekawhat.com/wp-content/uploads/2022/11/Feature.jpg'],
-                'perifericos' => ['nombre' => 'Periféricos Gaming',   'icono' => 'Gamepad', 'imagen_default' => 'https://m.media-amazon.com/images/I/81lWNgidA3L._AC_UF894,1000_QL80_.jpg'],
-                'accesorios'  => ['nombre' => 'Accesorios',           'icono' => 'Plug',   'imagen_default' => 'https://cdn.thewirecutter.com/wp-content/media/2023/10/laptopstands-2048px-8263.jpg'],
-                'monitores'   => ['nombre' => 'Monitores y Pantallas','icono' => 'Monitor','imagen_default' => 'https://m.media-amazon.com/images/I/71h4KXNWf-L._AC_SL1500_.jpg'],
-                'otros'       => ['nombre' => 'Otros',                'icono' => 'Package','imagen_default' => 'https://via.placeholder.com/800x600?text=Ctech'],
-            ];
-
-            // Cargar solo categorías visibles y agruparlas por 'grupo'
-            $categorias = \App\Models\Categoria::where('oculta', false)
+            // Cargar grupos principales ordenados por 'orden' descendente y solo los no ocultos
+            $gruposPrincipales = \App\Models\GrupoCategoria::where('oculta', false)
                 ->orderByDesc('orden')
-                ->orderBy('nombre')
-                ->get()
-                ->groupBy('grupo');
+                ->get();
 
-            // Solo mostrar grupos que existen y tienen al menos una categoría
-            $gruposActivos = $categorias->keys()->intersect(array_keys($gruposData));
+            // Cargar subcategorías visibles, con su grupo y ordenadas
+            $subcategorias = \App\Models\Categoria::where('oculta', false)
+                ->with('grupoCategoria')
+                ->orderByDesc('orden')
+                ->get();
         @endphp
 
-        @if($gruposActivos->isNotEmpty())
-            <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-{{ $gruposActivos->count() >= 5 ? 5 : $gruposActivos->count() }} gap-8">
-                @foreach($gruposActivos as $grupoKey)
+        @if($gruposPrincipales->isNotEmpty())
+            <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-8">
+                @foreach($gruposPrincipales as $grupo)
                     @php
-                        $grupo = $gruposData[$grupoKey];
-                        // Tomar la imagen de la primera categoría del grupo (la que tenga mayor orden)
-                        $imagenUsada = $categorias[$grupoKey]->first()?->imagen;
+                        $subsDelGrupo = $subcategorias->where('grupo_categoria_id', $grupo->id);
                     @endphp
 
-                    <div class="categoria-principal group relative rounded-xl overflow-hidden shadow-2xl hover:shadow-neon transition-all">
-                        <img src="{{ $imagenUsada ? asset('storage/' . $imagenUsada) : $grupo['imagen_default'] }}" 
-                             alt="{{ $grupo['nombre'] }}" 
-                             class="w-full h-96 object-cover">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-70"></div>
-                        <div class="absolute bottom-0 p-8 text-white text-center w-full">
-                            <div class="text-6xl mb-4">{{ $grupo['icono'] }}</div>
-                            <h3 class="text-3xl font-bold">{{ $grupo['nombre'] }}</h3>
-                            <ul class="mt-4 space-y-2">
-                                @foreach($categorias[$grupoKey] as $cat)
-                                    <li>
-                                        <a href="{{ route('categorias.show', $cat->slug) }}" class="hover:text-green-400 transition">
-                                            {{ $cat->nombre }}
-                                        </a>
-                                    </li>
-                                @endforeach
-                            </ul>
+                    @if($subsDelGrupo->isNotEmpty())
+                        <div class="categoria-principal group relative rounded-xl overflow-hidden shadow-2xl hover:shadow-neon transition-all">
+                            <img src="{{ $grupo->imagen ? asset('storage/' . $grupo->imagen) : 'https://via.placeholder.com/1200x800?text=' . urlencode($grupo->nombre) }}" 
+                                 alt="{{ $grupo->nombre }}" 
+                                 class="w-full h-96 object-cover">
+
+                            <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-70"></div>
+                            
+                            <div class="absolute bottom-0 p-8 text-white text-center w-full">
+                                <div class="text-5xl mb-4">
+                                    <x-dynamic-component 
+                                        :component="$grupo->icono ?? 'heroicon-o-cpu-chip'" 
+                                        class="w-32 h-32 text-blue-400 mx-auto" 
+                                    />
+                                </div>
+                                <h3 class="text-3xl font-bold">{{ $grupo->nombre }}</h3>
+                                <ul class="mt-4 space-y-2">
+                                    @foreach($subsDelGrupo as $sub)
+                                        <li>
+                                            <a href="{{ route('categorias.show', $sub->slug) }}" class="hover:text-green-400 transition">
+                                                {{ $sub->nombre }}
+                                            </a>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </div>
                         </div>
-                    </div>
+                    @endif
                 @endforeach
             </div>
         @else

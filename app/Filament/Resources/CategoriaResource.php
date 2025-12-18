@@ -15,10 +15,10 @@ use Illuminate\Support\Str;
 class CategoriaResource extends Resource
 {
     protected static ?string $model = Categoria::class;
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-    protected static ?string $navigationLabel = 'Categorías';
-    protected static ?string $label = 'Categoría';
-    protected static ?string $pluralLabel = 'Categorías';
+    protected static ?string $navigationIcon = 'heroicon-o-tag';
+    protected static ?string $navigationLabel = 'Subcategorías';
+    protected static ?string $label = 'Subcategoría';
+    protected static ?string $pluralLabel = 'Subcategorías';
     protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
@@ -40,39 +40,19 @@ class CategoriaResource extends Resource
                     ->unique(Categoria::class, 'slug', ignoreRecord: true)
                     ->helperText('Se genera automáticamente, pero puedes editarlo.'),
 
-                Forms\Components\Select::make('grupo')
-                    ->label('Grupo Principal')
-                    ->options([
-                        'laptops'     => 'Laptops',
-                        'pcs'         => 'PC de Escritorio',
-                        'perifericos' => 'Periféricos Gaming',
-                        'accesorios'  => 'Accesorios',
-                        'monitores'   => 'Monitores y Pantallas',
-                        'otros'       => 'Otros',
-                    ])
+                Forms\Components\Select::make('grupo_categoria_id')
+                    ->label('Pertenece al grupo')
+                    ->relationship('grupoCategoria', 'nombre')
+                    ->searchable()
+                    ->preload()
                     ->required()
-                    ->default('otros')
-                    ->helperText('Elige el bloque grande donde aparecerá esta categoría en la página principal.'),
+                    ->helperText('Elige el bloque grande donde aparecerá esta subcategoría en la página principal.'),
 
                 Forms\Components\TextInput::make('orden')
                     ->label('Orden de aparición')
                     ->numeric()
                     ->default(0)
                     ->helperText('Número más alto = aparece primero dentro de su grupo. Ej: 100 = primero.'),
-
-                Forms\Components\FileUpload::make('imagen')
-                    ->label('Imagen para el grupo')
-                    ->image()
-                    ->directory('categorias')
-                    ->visibility('public')
-                    ->imageEditor()
-                    ->imageEditorAspectRatios([
-                        '16:9',
-                        '4:3',
-                        '1:1',
-                    ])
-                    ->helperText('Se usará como imagen del bloque grande si esta categoría tiene el mayor orden en su grupo.')
-                    ->columnSpanFull(),
 
                 Forms\Components\Textarea::make('descripcion')
                     ->label('Descripción')
@@ -85,8 +65,8 @@ class CategoriaResource extends Resource
                     ->maxLength(255),
 
                 Forms\Components\Toggle::make('oculta')
-                    ->label('¿Ocultar categoría?')
-                    ->helperText('Si activas este interruptor, la categoría NO aparecerá en la tienda ni en menús.')
+                    ->label('¿Ocultar subcategoría?')
+                    ->helperText('Si activas este interruptor, la subcategoría NO aparecerá en la tienda ni en menús.')
                     ->default(false)
                     ->onIcon('heroicon-m-eye-slash')
                     ->offIcon('heroicon-m-eye')
@@ -110,29 +90,16 @@ class CategoriaResource extends Resource
                     ->label('Slug')
                     ->searchable(),
 
-                Tables\Columns\TextColumn::make('grupo')
-                    ->label('Grupo')
+                Tables\Columns\TextColumn::make('grupoCategoria.nombre')
+                    ->label('Grupo Principal')
                     ->badge()
-                    ->color(fn (string $state): string => match ($state) {
-                        'laptops'     => 'info',
-                        'pcs'         => 'warning',
-                        'perifericos' => 'success',
-                        'accesorios'  => 'gray',
-                        'monitores'   => 'primary',
-                        'otros'       => 'secondary',
-                        default       => 'secondary',
-                    })
+                    ->color('primary')
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('orden')
                     ->label('Orden')
                     ->numeric()
                     ->sortable(),
-
-                Tables\Columns\ImageColumn::make('imagen')
-                    ->label('Imagen')
-                    ->size(50)
-                    ->circular(),
 
                 Tables\Columns\TextColumn::make('icono')
                     ->label('Icono')
@@ -155,16 +122,9 @@ class CategoriaResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                Tables\Filters\SelectFilter::make('grupo')
-                    ->label('Grupo')
-                    ->options([
-                        'laptops'     => 'Laptops',
-                        'pcs'         => 'PC de Escritorio',
-                        'perifericos' => 'Periféricos Gaming',
-                        'accesorios'  => 'Accesorios',
-                        'monitores'   => 'Monitores y Pantallas',
-                        'otros'       => 'Otros',
-                    ]),
+                Tables\Filters\SelectFilter::make('grupo_categoria_id')
+                    ->label('Grupo Principal')
+                    ->relationship('grupoCategoria', 'nombre'),
 
                 Tables\Filters\TernaryFilter::make('oculta')
                     ->label('Visibilidad')
@@ -181,8 +141,8 @@ class CategoriaResource extends Resource
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ])
-            ->defaultSort('grupo', 'asc')
-            ->reorderable('orden'); // Permite arrastrar para reordenar en la tabla
+            ->defaultSort('grupo_categoria_id', 'asc')
+            ->reorderable('orden');
     }
 
     public static function getRelations(): array

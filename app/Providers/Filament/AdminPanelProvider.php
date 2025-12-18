@@ -18,6 +18,11 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
+// AÑADIMOS TUS RESOURCES AQUÍ
+use App\Filament\Resources\CategoriaResource;
+use App\Filament\Resources\ProductoResource;
+use App\Filament\Resources\GrupoCategoriaResource; // ← NUEVO: Grupos principales
+
 class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
@@ -34,6 +39,15 @@ class AdminPanelProvider extends PanelProvider
             ->brandLogo(asset('images/logo.png'))
             ->brandLogoHeight('5rem')
             ->darkModeBrandLogo(asset('images/logo-dark.png'))
+
+            // REGISTRAMOS TUS RESOURCES MANUALMENTE (así aparecen en el menú)
+            ->resources([
+                GrupoCategoriaResource::class,   // ← Primero los grupos principales
+                CategoriaResource::class,        // ← Luego las subcategorías
+                ProductoResource::class,         // ← Tus productos
+                // Aquí puedes agregar más en el futuro
+            ])
+
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
@@ -57,6 +71,6 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-            ]); // ← ¡AQUÍ FALTA EL PUNTO Y COMA!
+            ]); // ← ¡PUNTO Y COMA CORREGIDO!
     }
 }
