@@ -28,8 +28,12 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->colors([
-                'primary' => Color::Amber,
+                'primary' => Color::Emerald,
             ])
+            ->brandName('Ctech')
+            ->brandLogo(asset('images/logo.png'))
+            ->brandLogoHeight('5rem')
+            ->darkModeBrandLogo(asset('images/logo-dark.png'))
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
@@ -53,6 +57,6 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-            ]);
+            ]); // ← ¡AQUÍ FALTA EL PUNTO Y COMA!
     }
 }

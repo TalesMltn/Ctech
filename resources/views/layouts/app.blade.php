@@ -12,30 +12,49 @@
     <!-- Font Awesome para iconos -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 
-    <!-- Alpine.js para el carousel y efectos interactivos -->
+    <!-- Alpine.js -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
-    <!-- Estilos personalizados (glow neón) - MANTENIDOS -->
+    <!-- Estilos neón mejorados -->
     <style>
-        .shadow-neon {
-            box-shadow: 0 0 20px 5px rgba(0, 255, 100, 0.6);
+        /* Glow neón verde principal */
+        .neon-glow {
+            text-shadow: 0 0 10px rgba(0, 255, 100, 0.8),
+                         0 0 20px rgba(0, 255, 100, 0.6),
+                         0 0 30px rgba(0, 255, 100, 0.4);
         }
-        .hover\:shadow-neon:hover {
-            box-shadow: 0 0 30px 10px rgba(0, 255, 100, 0.8);
+        .neon-glow-strong {
+            box-shadow: 0 0 20px rgba(0, 255, 100, 0.8),
+                        0 0 40px rgba(0, 255, 100, 0.6),
+                        0 0 60px rgba(0, 255, 100, 0.4);
+        }
+        /* Hover en menú */
+        .hover\:neon-glow:hover {
+            text-shadow: 0 0 15px rgba(0, 255, 200, 1),
+                         0 0 30px rgba(0, 255, 200, 0.8);
+            transition: all 0.3s ease;
+        }
+        /* Animación pulsante sutil para el navbar */
+        @keyframes pulse-neon {
+            0%, 100% { box-shadow: 0 0 10px rgba(0, 255, 100, 0.3); }
+            50% { box-shadow: 0 0 30px rgba(0, 255, 100, 0.6); }
+        }
+        .animate-pulse-neon {
+            animation: pulse-neon 4s infinite ease-in-out;
         }
     </style>
 </head>
 <body class="bg-gray-900 text-white min-h-screen flex flex-col">
 
-    <!-- Navbar Nuevo - Estilo limpio como TecMerch + Efectos Neón -->
-    <header class="bg-gradient-to-r from-blue-700 via-blue-800 to-blue-900 text-white py-4 fixed w-full top-0 z-50 shadow-lg">
+    <!-- Navbar con efecto neón llamativo -->
+    <header class="bg-gradient-to-r from-blue-950 via-blue-900 to-blue-950 text-white py-4 fixed w-full top-0 z-50 shadow-2xl animate-pulse-neon">
         <div class="container mx-auto px-6 flex items-center justify-between">
-            <!-- Logo a la izquierda con glow neón -->
+            <!-- Logo con glow neón fuerte -->
             <a href="{{ route('home') }}" class="flex items-center space-x-4">
-                <div class="bg-green-500 rounded-lg p-3 shadow-neon">
-                    <i class="fas fa-microchip text-3xl"></i>
+                <div class="bg-green-500 rounded-lg p-3 neon-glow-strong">
+                    <i class="fas fa-microchip text-4xl text-white"></i>
                 </div>
-                <span class="text-3xl font-bold tracking-wide">Ctech</span>
+                <span class="text-4xl font-bold tracking-wide neon-glow">Ctech</span>
             </a>
 
             <!-- Menú central simple -->
@@ -55,9 +74,21 @@
                 </a>
 
                 <!-- Botón Iniciar Sesión verde con glow neón al hover -->
-                <a href="#" class="bg-gradient-to-r from-green-600 to-green-500 hover:from-green-700 hover:to-green-600 hover:shadow-neon px-8 py-3 rounded-lg font-bold text-lg shadow-md transition transform hover:scale-105">
-                    Iniciar Sesión
-                </a>
+                @auth('filament')
+    <a href="{{ url('/admin') }}" class="bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-700 hover:to-purple-600 hover:shadow-neon px-8 py-3 rounded-lg font-bold text-lg shadow-md transition transform hover:scale-105">
+        Panel Admin
+    </a>
+    <form method="POST" action="{{ route('filament.admin.auth.logout') }}" class="inline">
+        @csrf
+        <button type="submit" class="ml-4 bg-red-600 hover:bg-red-700 px-6 py-3 rounded-lg font-bold transition shadow-md">
+            Cerrar Sesión
+        </button>
+    </form>
+@else
+    <a href="{{ url('/admin') }}" class="bg-gradient-to-r from-green-600 to-green-500 hover:from-green-700 hover:to-green-600 hover:shadow-neon px-8 py-3 rounded-lg font-bold text-lg shadow-md transition transform hover:scale-105">
+        Iniciar Sesión
+    </a>
+@endauth
             </div>
 
             <!-- Botón menú móvil (futuro) -->
