@@ -1,15 +1,18 @@
 @extends('layouts.app')
 
 @section('content')
-    <!-- HERO SECTION -->
-    <section class="relative h-screen flex items-center justify-center overflow-hidden">
-        <div class="absolute inset-0 bg-gradient-to-r from-blue-900 via-green-900 to-blue-900 opacity-80"></div>
-        <div class="relative z-10 text-center text-white px-4">
-            <h1 class="text-5xl md:text-7xl font-bold mb-6">Las mejores computadoras <span class="text-green-400">a los mejores precios</span></h1>
-            <p class="text-xl md:text-3xl mb-8">Encuentra laptops, desktops y accesorios gaming de las mejores marcas</p>
-            <a href="#categorias" class="bg-green-500 hover:bg-green-600 hover:shadow-neon px-10 py-5 rounded-lg text-2xl font-bold transition">Explorar Ahora</a>
-        </div>
-    </section>
+<!-- HERO SECTION ULTRA COMPACTO -->
+<section class="relative h-80 flex items-center justify-center overflow-hidden"> <!-- h-96 → h-80 (320px altura) -->
+    <div class="absolute inset-0 bg-gradient-to-r from-blue-900 via-green-900 to-blue-900 opacity-80"></div>
+    
+    <div class="relative z-10 text-center text-white px-4">
+        <h1 class="text-3xl md:text-5xl font-bold mb-3">Las mejores computadoras <span class="text-green-400">a los mejores precios</span></h1>
+        <p class="text-base md:text-xl mb-6">Encuentra laptops, desktops y accesorios gaming de las mejores marcas</p>
+        <a href="#categorias" class="bg-green-500 hover:bg-green-600 hover:shadow-neon px-7 py-3 rounded-lg text-lg font-bold transition transform hover:scale-105">
+            Explorar Ahora
+        </a>
+    </div>
+</section>
 
     <!-- BENEFICIOS -->
     <section class="py-16 bg-gray-800">
@@ -98,64 +101,79 @@
         @endif
     </section>
 
-    <!-- PRODUCTOS DESTACADOS / OFERTAS -->
-    <section class="py-16 bg-gray-800">
-        <h2 class="text-4xl font-bold text-center mb-4 text-green-400">Productos en Oferta</h2>
-        <p class="text-center text-xl mb-12 text-gray-300">Los mejores descuentos seleccionados para ti</p>
+    <!-- PRODUCTOS EN OFERTA - COMPACTA -->
+<section class="py-10 bg-gray-800">
+    <div class="container mx-auto px-4">
+        <h2 class="text-3xl font-bold text-center text-green-400 mb-3">Productos en Oferta</h2>
+        <p class="text-center text-lg text-gray-300 mb-8">Los mejores descuentos seleccionados para ti</p>
 
-        <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8">
+        <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
             @forelse(\App\Models\Producto::where('destacado', true)->take(8)->get() as $producto)
-                <div class="tarjeta-producto relative bg-gray-900 rounded-xl shadow-xl hover:shadow-neon transition-all overflow-hidden">
-                    <div class="absolute top-4 left-4 bg-red-600 text-white px-4 py-2 rounded-lg font-bold z-10">OFERTA</div>
+                <div class="bg-gray-900 rounded-xl shadow-xl hover:shadow-neon transition-all overflow-hidden">
+                    <div class="absolute top-3 left-3 bg-red-600 text-white px-3 py-1.5 rounded-lg text-sm font-bold z-10">OFERTA</div>
                     
                     <img src="{{ $producto->imagen ?? 'https://via.placeholder.com/400x300?text=Oferta+Ctech' }}" 
                          alt="{{ $producto->nombre }}" 
-                         class="w-full h-64 object-cover">
+                         class="w-full h-56 object-cover">
 
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold text-white mb-2 line-clamp-2">{{ $producto->nombre }}</h3>
-                        <p class="text-green-400 text-3xl font-bold">
+                    <div class="p-5">
+                        <h3 class="text-lg font-bold text-white mb-2 line-clamp-2">{{ $producto->nombre }}</h3>
+                        <p class="text-green-400 text-2xl font-bold mb-1">
                             S/. {{ number_format($producto->precio * 0.9, 2) }} 
-                            <span class="text-gray-500 line-through text-xl ml-2">S/. {{ number_format($producto->precio, 2) }}</span>
+                            <span class="text-gray-500 line-through text-base ml-2">S/. {{ number_format($producto->precio, 2) }}</span>
                         </p>
-                        <p class="text-gray-400 text-sm mt-2">Stock: {{ $producto->stock }}</p>
+                        <p class="text-gray-400 text-xs mb-4">Stock: {{ $producto->stock }}</p>
                         
-                        <div class="mt-6 flex space-x-4">
+                        <div class="flex space-x-3">
                             <a href="{{ route('productos.show', $producto->id) }}" 
-                               class="flex-1 bg-gray-700 hover:bg-gray-600 text-center py-3 rounded-lg font-semibold transition">
+                               class="flex-1 bg-gray-700 hover:bg-gray-600 text-center py-2.5 rounded-lg text-sm font-semibold transition">
                                 Ver Detalle
                             </a>
-                            <button class="flex-1 bg-green-500 hover:bg-green-600 py-3 rounded-lg font-bold transition">
+                            <button class="flex-1 bg-green-500 hover:bg-green-600 py-2.5 rounded-lg text-sm font-bold transition">
                                 Añadir al Carrito
                             </button>
                         </div>
                     </div>
                 </div>
             @empty
-                <div class="col-span-full text-center py-20">
-                    <i class="fas fa-tags text-8xl text-gray-600 mb-6"></i>
-                    <p class="text-3xl text-gray-500 mb-4">Aún no hay productos en oferta</p>
-                    <p class="text-xl text-gray-400">¡Vuelve pronto! Estamos preparando las mejores promociones para ti.</p>
+                <div class="col-span-full text-center py-12">
+                    <i class="fas fa-tags text-6xl text-gray-600 mb-4"></i>
+                    <p class="text-2xl text-gray-500 mb-2">Aún no hay productos en oferta</p>
+                    <p class="text-base text-gray-400">¡Vuelve pronto! Estamos preparando las mejores promociones para ti.</p>
                 </div>
             @endforelse
         </div>
 
         @if(\App\Models\Producto::where('destacado', true)->count() > 8)
-            <div class="text-center mt-12">
-                <a href="#" class="bg-green-500 hover:bg-green-600 px-8 py-4 rounded-lg text-xl font-bold">Ver Más Ofertas</a>
+            <div class="text-center mt-8">
+                <a href="#" class="bg-green-500 hover:bg-green-600 px-6 py-3 rounded-lg text-lg font-bold transition">
+                    Ver Más Ofertas
+                </a>
             </div>
         @endif
-    </section>
+    </div>
+</section>
 
-    <!-- NEWSLETTER -->
-    <section class="py-16 bg-gradient-to-r from-blue-900 to-green-900">
-        <div class="container mx-auto px-4 text-center text-white">
-            <h2 class="text-4xl font-bold mb-4">¡Mantente Actualizado!</h2>
-            <p class="text-xl mb-8">Recibe ofertas exclusivas y novedades gamer</p>
-            <form class="max-w-md mx-auto flex">
-                <input type="email" placeholder="Tu correo electrónico" class="px-6 py-4 rounded-l-lg w-full">
-                <button type="submit" class="bg-green-500 hover:bg-green-600 px-8 py-4 rounded-r-lg font-bold">Suscribirme</button>
-            </form>
-        </div>
-    </section>
+<!-- NEWSLETTER COMPACTA -->
+<section class="py-10 bg-gradient-to-r from-blue-900 to-green-900">
+    <div class="container mx-auto px-4 text-center text-white">
+        <h2 class="text-4xl font-bold mb-2">¡Mantente Actualizado!</h2>
+        <p class="text-lg mb-6">Recibe ofertas exclusivas y novedades gamer</p>
+
+        <form class="max-w-sm mx-auto flex flex-col sm:flex-row gap-0 shadow-lg rounded-lg overflow-hidden">
+            <input 
+                type="email" 
+                placeholder="Tu correo electrónico" 
+                required
+                class="px-6 py-4 bg-white text-gray-800 focus:outline-none w-full"
+            >
+            <button 
+                type="submit" 
+                class="bg-green-500 hover:bg-green-600 px-8 py-4 font-bold text-lg transition"
+            >
+                Suscribirme
+            </button>
+        </form>
+    </div>
+</section>
 @endsection

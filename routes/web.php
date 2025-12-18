@@ -9,9 +9,24 @@ use Filament\Facades\Filament;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
+// Lista general de productos (catálogo principal)
+Route::get('/productos', [ProductoController::class, 'index'])->name('producto.index');
+
+// Detalle de un producto específico
+Route::get('/productos/{id}', [ProductoController::class, 'show'])->name('productos.show');
+
+// Mostrar categoría por slug (con sus productos)
 Route::get('/categorias/{slug}', [CategoriaController::class, 'show'])->name('categorias.show');
 
-Route::get('/productos/{id}', [ProductoController::class, 'show'])->name('productos.show');
+// Página de Contacto
+Route::get('/contacto', function () {
+    return view('contacto');
+})->name('contacto');
+
+// Página de Servicio Técnico
+Route::get('/servicio-tecnico', function () {
+    return view('servicio');
+})->name('servicio');
 
 // Ruta personalizada para logout de Filament → redirige al home
 Route::post('/admin/logout', function (Request $request) {
