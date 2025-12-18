@@ -37,71 +37,67 @@
         </div>
     </section>
 
-    <!-- CATEGORÍAS DINÁMICAS AGRUPADAS -->
+    <!-- CATEGORÍAS 100% AUTOMÁTICAS CON IMAGEN Y GRUPO -->
     <section id="categorias" class="py-16">
         <h2 class="text-4xl font-bold text-center mb-12 text-green-400">Explora por Categorías</h2>
         
         @php
-            // Cargar solo categorías visibles (no ocultas desde el admin)
-            $categoriasVisibles = \App\Models\Categoria::where('oculta', false)->get();
-            
-            // Grupos principales con sus subcategorías (ajusta slugs si cambias nombres)
-            $grupos = [
-                'laptops' => [
-                    'nombre' => 'Laptops',
-                    'icono' => '💻',
-                    'imagen' => 'https://media.officedepot.com/images/f_auto,q_auto,e_sharpen,h_450/products/7089358/7089358',
-                    'categorias' => $categoriasVisibles->whereIn('slug', ['laptops-oficina', 'laptops-gaming'])
-                ],
-                'pcs' => [
-                    'nombre' => 'PC de Escritorio',
-                    'icono' => '🖥️',
-                    'imagen' => 'https://geekawhat.com/wp-content/uploads/2022/11/Feature.jpg',
-                    'categorias' => $categoriasVisibles->whereIn('slug', ['pcs-oficina', 'pcs-gaming'])
-                ],
-                'perifericos' => [
-                    'nombre' => 'Periféricos Gaming',
-                    'icono' => '🎮',
-                    'imagen' => 'https://m.media-amazon.com/images/I/81lWNgidA3L._AC_UF894,1000_QL80_.jpg',
-                    'categorias' => $categoriasVisibles->whereIn('slug', ['teclados-gaming', 'mouse-gaming', 'audifonos-gaming'])
-                ],
-                'accesorios' => [
-                    'nombre' => 'Accesorios',
-                    'icono' => '🔌',
-                    'imagen' => 'https://cdn.thewirecutter.com/wp-content/media/2023/10/laptopstands-2048px-8263.jpg',
-                    'categorias' => $categoriasVisibles->whereIn('slug', ['cables', 'adaptadores', 'mochilas', 'soportes'])
-                ],
+            // Grupos con sus datos por defecto
+            $gruposData = [
+                'laptops'     => ['nombre' => 'Laptops',              'icono' => 'Laptop', 'imagen_default' => 'https://media.officedepot.com/images/f_auto,q_auto,e_sharpen,h_450/products/7089358/7089358'],
+                'pcs'         => ['nombre' => 'PC de Escritorio',     'icono' => 'PC',     'imagen_default' => 'https://geekawhat.com/wp-content/uploads/2022/11/Feature.jpg'],
+                'perifericos' => ['nombre' => 'Periféricos Gaming',   'icono' => 'Gamepad', 'imagen_default' => 'https://m.media-amazon.com/images/I/81lWNgidA3L._AC_UF894,1000_QL80_.jpg'],
+                'accesorios'  => ['nombre' => 'Accesorios',           'icono' => 'Plug',   'imagen_default' => 'https://cdn.thewirecutter.com/wp-content/media/2023/10/laptopstands-2048px-8263.jpg'],
+                'monitores'   => ['nombre' => 'Monitores y Pantallas','icono' => 'Monitor','imagen_default' => 'https://m.media-amazon.com/images/I/71h4KXNWf-L._AC_SL1500_.jpg'],
+                'otros'       => ['nombre' => 'Otros',                'icono' => 'Package','imagen_default' => 'https://via.placeholder.com/800x600?text=Ctech'],
             ];
-            
-            // Filtrar grupos vacíos (si todas sus subcategorías están ocultas, no se muestra el bloque)
-            $grupos = array_filter($grupos, fn($grupo) => $grupo['categorias']->isNotEmpty());
+
+            // Cargar solo categorías visibles y agruparlas por 'grupo'
+            $categorias = \App\Models\Categoria::where('oculta', false)
+                ->orderByDesc('orden')
+                ->orderBy('nombre')
+                ->get()
+                ->groupBy('grupo');
+
+            // Solo mostrar grupos que existen y tienen al menos una categoría
+            $gruposActivos = $categorias->keys()->intersect(array_keys($gruposData));
         @endphp
 
-        <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            @forelse($grupos as $grupo)
-                <div class="categoria-principal group relative rounded-xl overflow-hidden shadow-2xl hover:shadow-neon transition-all">
-                    <img src="{{ $grupo['imagen'] }}" alt="{{ $grupo['nombre'] }}" class="w-full h-96 object-cover">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-70"></div>
-                    <div class="absolute bottom-0 p-8 text-white text-center w-full">
-                        <div class="text-6xl mb-4">{{ $grupo['icono'] }}</div>
-                        <h3 class="text-3xl font-bold">{{ $grupo['nombre'] }}</h3>
-                        <ul class="mt-4 space-y-2">
-                            @foreach($grupo['categorias'] as $cat)
-                                <li>
-                                    <a href="{{ route('categorias.show', $cat->slug) }}" class="hover:text-green-400 transition">
-                                        {{ $cat->nombre }}
-                                    </a>
-                                </li>
-                            @endforeach
-                        </ul>
+        @if($gruposActivos->isNotEmpty())
+            <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-{{ $gruposActivos->count() >= 5 ? 5 : $gruposActivos->count() }} gap-8">
+                @foreach($gruposActivos as $grupoKey)
+                    @php
+                        $grupo = $gruposData[$grupoKey];
+                        // Tomar la imagen de la primera categoría del grupo (la que tenga mayor orden)
+                        $imagenUsada = $categorias[$grupoKey]->first()?->imagen;
+                    @endphp
+
+                    <div class="categoria-principal group relative rounded-xl overflow-hidden shadow-2xl hover:shadow-neon transition-all">
+                        <img src="{{ $imagenUsada ? asset('storage/' . $imagenUsada) : $grupo['imagen_default'] }}" 
+                             alt="{{ $grupo['nombre'] }}" 
+                             class="w-full h-96 object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-70"></div>
+                        <div class="absolute bottom-0 p-8 text-white text-center w-full">
+                            <div class="text-6xl mb-4">{{ $grupo['icono'] }}</div>
+                            <h3 class="text-3xl font-bold">{{ $grupo['nombre'] }}</h3>
+                            <ul class="mt-4 space-y-2">
+                                @foreach($categorias[$grupoKey] as $cat)
+                                    <li>
+                                        <a href="{{ route('categorias.show', $cat->slug) }}" class="hover:text-green-400 transition">
+                                            {{ $cat->nombre }}
+                                        </a>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </div>
                     </div>
-                </div>
-            @empty
-                <div class="col-span-full text-center py-20">
-                    <p class="text-2xl text-gray-500">No hay categorías disponibles en este momento.</p>
-                </div>
-            @endforelse
-        </div>
+                @endforeach
+            </div>
+        @else
+            <div class="text-center py-20">
+                <p class="text-2xl text-gray-500">No hay categorías disponibles en este momento.</p>
+            </div>
+        @endif
     </section>
 
     <!-- PRODUCTOS DESTACADOS / OFERTAS -->
@@ -114,7 +110,6 @@
                 <div class="tarjeta-producto relative bg-gray-900 rounded-xl shadow-xl hover:shadow-neon transition-all overflow-hidden">
                     <div class="absolute top-4 left-4 bg-red-600 text-white px-4 py-2 rounded-lg font-bold z-10">OFERTA</div>
                     
-                    <!-- Imagen dinámica (placeholder si no tiene) -->
                     <img src="{{ $producto->imagen ?? 'https://via.placeholder.com/400x300?text=Oferta+Ctech' }}" 
                          alt="{{ $producto->nombre }}" 
                          class="w-full h-64 object-cover">

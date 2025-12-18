@@ -40,23 +40,56 @@ class CategoriaResource extends Resource
                     ->unique(Categoria::class, 'slug', ignoreRecord: true)
                     ->helperText('Se genera automáticamente, pero puedes editarlo.'),
 
+                Forms\Components\Select::make('grupo')
+                    ->label('Grupo Principal')
+                    ->options([
+                        'laptops'     => 'Laptops',
+                        'pcs'         => 'PC de Escritorio',
+                        'perifericos' => 'Periféricos Gaming',
+                        'accesorios'  => 'Accesorios',
+                        'monitores'   => 'Monitores y Pantallas',
+                        'otros'       => 'Otros',
+                    ])
+                    ->required()
+                    ->default('otros')
+                    ->helperText('Elige el bloque grande donde aparecerá esta categoría en la página principal.'),
+
+                Forms\Components\TextInput::make('orden')
+                    ->label('Orden de aparición')
+                    ->numeric()
+                    ->default(0)
+                    ->helperText('Número más alto = aparece primero dentro de su grupo. Ej: 100 = primero.'),
+
+                Forms\Components\FileUpload::make('imagen')
+                    ->label('Imagen para el grupo')
+                    ->image()
+                    ->directory('categorias')
+                    ->visibility('public')
+                    ->imageEditor()
+                    ->imageEditorAspectRatios([
+                        '16:9',
+                        '4:3',
+                        '1:1',
+                    ])
+                    ->helperText('Se usará como imagen del bloque grande si esta categoría tiene el mayor orden en su grupo.')
+                    ->columnSpanFull(),
+
                 Forms\Components\Textarea::make('descripcion')
                     ->label('Descripción')
                     ->rows(4)
                     ->columnSpanFull(),
 
                 Forms\Components\TextInput::make('icono')
-                    ->label('Icono (Heroicon o clase CSS)')
-                    ->placeholder('Ej: heroicon-o-tag')
+                    ->label('Icono (Emoji o Heroicon)')
+                    ->placeholder('Ej: 💻 o heroicon-o-computer-desktop')
                     ->maxLength(255),
 
-                // AQUÍ ESTÁ EL TOGGLE QUE QUERÍAS
                 Forms\Components\Toggle::make('oculta')
                     ->label('¿Ocultar categoría?')
                     ->helperText('Si activas este interruptor, la categoría NO aparecerá en la tienda ni en menús.')
-                    ->default(false)                    // false = visible por defecto
-                    ->onIcon('heroicon-m-eye-slash')    // cuando está oculto
-                    ->offIcon('heroicon-m-eye')         // cuando está visible
+                    ->default(false)
+                    ->onIcon('heroicon-m-eye-slash')
+                    ->offIcon('heroicon-m-eye')
                     ->onColor('danger')
                     ->offColor('success')
                     ->inline(false)
@@ -77,11 +110,34 @@ class CategoriaResource extends Resource
                     ->label('Slug')
                     ->searchable(),
 
+                Tables\Columns\TextColumn::make('grupo')
+                    ->label('Grupo')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'laptops'     => 'info',
+                        'pcs'         => 'warning',
+                        'perifericos' => 'success',
+                        'accesorios'  => 'gray',
+                        'monitores'   => 'primary',
+                        'otros'       => 'secondary',
+                        default       => 'secondary',
+                    })
+                    ->sortable(),
+
+                Tables\Columns\TextColumn::make('orden')
+                    ->label('Orden')
+                    ->numeric()
+                    ->sortable(),
+
+                Tables\Columns\ImageColumn::make('imagen')
+                    ->label('Imagen')
+                    ->size(50)
+                    ->circular(),
+
                 Tables\Columns\TextColumn::make('icono')
                     ->label('Icono')
-                    ->formatStateUsing(fn (?string $state) => $state ? "✓ {$state}" : '—'),
+                    ->formatStateUsing(fn (?string $state) => $state ? $state : '—'),
 
-                // Columna para ver rápido si está oculta o no
                 Tables\Columns\ToggleColumn::make('oculta')
                     ->label('Oculta')
                     ->sortable(),
@@ -99,7 +155,17 @@ class CategoriaResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                // Filtro rápido para ver solo visibles u ocultas
+                Tables\Filters\SelectFilter::make('grupo')
+                    ->label('Grupo')
+                    ->options([
+                        'laptops'     => 'Laptops',
+                        'pcs'         => 'PC de Escritorio',
+                        'perifericos' => 'Periféricos Gaming',
+                        'accesorios'  => 'Accesorios',
+                        'monitores'   => 'Monitores y Pantallas',
+                        'otros'       => 'Otros',
+                    ]),
+
                 Tables\Filters\TernaryFilter::make('oculta')
                     ->label('Visibilidad')
                     ->placeholder('Todas')
@@ -115,7 +181,8 @@ class CategoriaResource extends Resource
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ])
-            ->defaultSort('nombre', 'asc');
+            ->defaultSort('grupo', 'asc')
+            ->reorderable('orden'); // Permite arrastrar para reordenar en la tabla
     }
 
     public static function getRelations(): array
