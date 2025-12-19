@@ -10,18 +10,17 @@ class CreateGrupoCategoria extends CreateRecord
 {
     protected static string $resource = GrupoCategoriaResource::class;
 
-    // Después de crear, redirige al listado
+    // Después de crear, redirige al index (lista)
     protected function getRedirectUrl(): string
     {
         return $this->getResource()::getUrl('index');
     }
 
-    // Mensaje bonito al crear
-    protected function getSavedNotification(): ?Notification
+    protected function getCreatedNotification(): ?Notification
     {
         return Notification::make()
             ->success()
             ->title('Grupo Principal creado')
-            ->body('El bloque grande se ha creado correctamente y ya aparece en la home.');
+            ->body('El bloque grande se ha creado correctamente.');
     }
 }

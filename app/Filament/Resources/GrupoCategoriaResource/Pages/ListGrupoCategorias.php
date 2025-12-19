@@ -13,7 +13,9 @@ class ListGrupoCategorias extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()
+                ->label('Nuevo Grupo Principal')
+                ->icon('heroicon-o-plus-circle'),
         ];
     }
 }
