@@ -8,7 +8,8 @@ use App\Models\Producto;
 
 class AddToCart extends Component
 {
-    protected $listeners = ['addToCart' => 'add'];
+    // Escuchamos solo nuestro evento único para evitar duplicados
+    protected $listeners = ['agregarProductoUnico' => 'add'];
 
     public function add($id, $name, $price, $image = null)
     {
@@ -29,8 +30,9 @@ class AddToCart extends Component
 
         Session::put('cart', $cart);
 
-        // ← ESTO ACTUALIZA EL CONTADOR EN EL NAVBAR EN TIEMPO REAL
-        $this->dispatch('cartUpdated');
+        // ← Eventos para actualización en tiempo real (Livewire + JS)
+        $this->dispatch('cart-updated');
+        $this->js('Livewire.dispatch("cart-updated")');
     }
 
     public function render()

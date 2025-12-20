@@ -10,13 +10,19 @@ class NavbarCart extends Component
     public $cart = [];
     public $open = false;
 
-    protected $listeners = ['addToCart' => 'addProduct'];
+    // ← CAMBIO 1: Eliminamos el listener viejo 'addToCart' (ya no lo usamos)
+    // ← CAMBIO 2: Agregamos el nuevo listener para actualización en tiempo real
+    protected $listeners = ['cart-updated' => '$refresh'];
 
     public function mount()
     {
         $this->cart = Session::get('cart', []);
     }
 
+    // ← OPCIONAL: Puedes eliminar todo este método addProduct()
+    // porque ya no lo usamos (ahora solo AddToCart.php agrega al carrito)
+    // Pero si quieres dejarlo por si acaso, no hay problema.
+    // Si lo dejas, no hará daño porque ya no se llama.
     public function addProduct($productId, $name, $price, $image = null)
     {
         $cart = Session::get('cart', []);
@@ -55,6 +61,9 @@ class NavbarCart extends Component
 
     public function render()
     {
+        // ← IMPORTANTE: Actualizamos $this->cart cada vez que se renderiza
+        $this->cart = Session::get('cart', []);
+
         return view('livewire.navbar-cart');
     }
 }

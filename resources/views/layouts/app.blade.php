@@ -5,19 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Ctech - Tu Tienda Gamer y de Oficina</title>
-
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-
     <!-- Alpine.js -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-
     <!-- Livewire Styles -->
     @livewireStyles
-
     <!-- Estilos neón -->
     <style>
         .neon-glow {
@@ -45,7 +40,6 @@
     </style>
 </head>
 <body class="bg-gray-900 text-white min-h-screen flex flex-col">
-
     <!-- Navbar -->
     <header class="bg-gradient-to-r from-blue-950 via-blue-900 to-blue-950 text-white py-4 fixed w-full top-0 z-50 shadow-2xl animate-pulse-neon">
         <div class="container mx-auto px-6 flex items-center justify-between">
@@ -56,7 +50,6 @@
                 </div>
                 <span class="text-4xl font-bold tracking-wide neon-glow">Ctech</span>
             </a>
-
             <!-- Menú central -->
             <nav class="hidden lg:flex items-center space-x-12 text-lg font-medium">
                 <a href="{{ route('home') }}" class="hover:text-green-400 hover:neon-glow transition duration-200">Inicio</a>
@@ -64,20 +57,19 @@
                 <a href="{{ route('contacto') }}" class="hover:text-green-400 hover:neon-glow transition duration-200">Contacto</a>
                 <a href="{{ route('servicio') }}" class="hover:text-green-400 hover:neon-glow transition duration-200">Servicio Técnico</a>
             </nav>
-
             <!-- Carrito y Login -->
             <div class="flex items-center space-x-4">
-                <!-- Carrito - Estilo compacto -->
+                <!-- Carrito con contador en vivo -->
                 <div x-data="{ open: false }" class="relative">
-                    <button 
-                        @click="open = !open" 
+                    <button
+                        @click="open = !open"
                         class="flex items-center space-x-2 bg-black hover:bg-gray-800 px-4 py-2.5 rounded-lg transition text-sm font-medium"
                     >
                         <i class="fas fa-shopping-cart text-lg"></i>
                         <span>
-                            Carrito 
+                            Carrito
                             <span class="text-green-400 font-bold">
-                                ({{ collect(session('cart', []))->sum('quantity') }})
+                                (<livewire:cart-count />)
                             </span>
                         </span>
                     </button>
@@ -95,8 +87,9 @@
                         x-transition:leave-end="opacity-0"
                     >
                         <div class="max-h-96 overflow-y-auto">
-                            @livewire('cart-dropdown')
+                            <livewire:cart-dropdown />
                         </div>
+                        <!-- Botón único "Ver Carrito Completo" -->
                         <div class="p-4 border-t border-gray-700">
                             <a href="{{ route('carrito') }}" class="block w-full bg-green-600 hover:bg-green-700 text-center py-3 rounded-lg font-bold transition">
                                 Ver Carrito Completo
@@ -122,7 +115,6 @@
                     </a>
                 @endauth
             </div>
-
             <!-- Menú móvil -->
             <button class="lg:hidden text-3xl">
                 <i class="fas fa-bars"></i>
@@ -146,10 +138,9 @@
         </div>
     </footer>
 
-    <!-- Componentes invisibles para eventos del carrito (evita fallas) -->
-    @livewire('cart')
-    @livewire('add-to-cart')  <!-- ← Esto escucha el $dispatch('addToCart') del botón -->
-
+    <!-- Componentes invisibles -->
+    @livewire('add-to-cart')     <!-- Único que agrega productos -->
+    @livewire('cart-count')
     <!-- Livewire Scripts -->
     @livewireScripts
 </body>

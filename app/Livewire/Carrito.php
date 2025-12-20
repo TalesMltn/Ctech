@@ -10,32 +10,12 @@ class Carrito extends Component
     public $cart = [];
     public $open = false;
 
-    protected $listeners = ['addToCart' => 'addProduct'];
+    // ← Nuevo listener para actualización en tiempo real con browser event
+    protected $listeners = ['cart-updated' => '$refresh'];
 
     public function mount()
     {
         $this->cart = Session::get('cart', []);
-    }
-
-    public function addProduct($productId, $name, $price, $image = null)
-    {
-        $cart = Session::get('cart', []);
-
-        if (isset($cart[$productId])) {
-            $cart[$productId]['quantity']++;
-        } else {
-            $cart[$productId] = [
-                'id' => $productId,
-                'name' => $name,
-                'price' => $price,
-                'image' => $image,
-                'quantity' => 1,
-            ];
-        }
-
-        Session::put('cart', $cart);
-        $this->cart = $cart;
-        $this->dispatch('cartUpdated');
     }
 
     public function toggle()
@@ -55,6 +35,9 @@ class Carrito extends Component
 
     public function render()
     {
+        // ← Siempre cargamos el carrito fresco desde la sesión al renderizar
+        $this->cart = Session::get('cart', []);
+
         return view('livewire.carrito');
     }
 }
