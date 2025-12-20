@@ -17,12 +17,18 @@ class Categoria extends Model
         'icono',
         'oculta',
         'orden',
-        'grupo_categoria_id', // <-- Importante: este campo
+        'grupo_categoria_id',
     ];
 
-    // RELACIÓN CON EL GRUPO PRINCIPAL
+    // Relación con el Grupo Principal (un grupo tiene muchas subcategorías)
     public function grupoCategoria()
     {
         return $this->belongsTo(GrupoCategoria::class, 'grupo_categoria_id');
+    }
+
+    // Relación con los Productos (una categoría tiene muchos productos)
+    public function productos()
+    {
+        return $this->hasMany(Producto::class, 'categoria_id');
     }
 }

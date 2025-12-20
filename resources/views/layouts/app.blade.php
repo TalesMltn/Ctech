@@ -15,6 +15,9 @@
     <!-- Alpine.js -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
+    <!-- Livewire Styles -->
+    @livewireStyles
+
     <!-- Estilos neón -->
     <style>
         .neon-glow {
@@ -63,12 +66,46 @@
             </nav>
 
             <!-- Carrito y Login -->
-            <div class="flex items-center space-x-6">
-                <a href="#" class="flex items-center bg-gray-900 hover:bg-gray-800 px-6 py-3 rounded-lg transition shadow-inner">
-                    <i class="fas fa-shopping-cart text-xl mr-3"></i>
-                    <span class="font-semibold">Carrito (<span class="text-green-400 font-bold">0</span>)</span>
-                </a>
+            <div class="flex items-center space-x-4">
+                <!-- Carrito - Estilo compacto -->
+                <div x-data="{ open: false }" class="relative">
+                    <button 
+                        @click="open = !open" 
+                        class="flex items-center space-x-2 bg-black hover:bg-gray-800 px-4 py-2.5 rounded-lg transition text-sm font-medium"
+                    >
+                        <i class="fas fa-shopping-cart text-lg"></i>
+                        <span>
+                            Carrito 
+                            <span class="text-green-400 font-bold">
+                                ({{ collect(session('cart', []))->sum('quantity') }})
+                            </span>
+                        </span>
+                    </button>
 
+                    <!-- Dropdown del carrito -->
+                    <div 
+                        x-show="open" 
+                        @click.away="open = false" 
+                        class="absolute right-0 mt-2 w-96 bg-gray-800 rounded-lg shadow-2xl z-50 border border-gray-700 overflow-hidden"
+                        x-transition:enter="transition ease-out duration-200"
+                        x-transition:enter-start="opacity-0 transform scale-95"
+                        x-transition:enter-end="opacity-100 transform scale-100"
+                        x-transition:leave="transition ease-in duration-150"
+                        x-transition:leave-start="opacity-100"
+                        x-transition:leave-end="opacity-0"
+                    >
+                        <div class="max-h-96 overflow-y-auto">
+                            @livewire('cart-dropdown')
+                        </div>
+                        <div class="p-4 border-t border-gray-700">
+                            <a href="{{ route('carrito') }}" class="block w-full bg-green-600 hover:bg-green-700 text-center py-3 rounded-lg font-bold transition">
+                                Ver Carrito Completo
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Login / Admin -->
                 @auth('filament')
                     <a href="{{ url('/admin') }}" class="bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-700 hover:to-purple-600 hover:shadow-neon px-8 py-3 rounded-lg font-bold text-lg shadow-md transition transform hover:scale-105">
                         Panel Admin
@@ -86,6 +123,7 @@
                 @endauth
             </div>
 
+            <!-- Menú móvil -->
             <button class="lg:hidden text-3xl">
                 <i class="fas fa-bars"></i>
             </button>
@@ -95,7 +133,7 @@
     <!-- Espacio para navbar fijo -->
     <div class="pt-20"></div>
 
-    <!-- Contenido -->
+    <!-- Contenido principal -->
     <main class="flex-1 container mx-auto px-4 py-8">
         @yield('content')
     </main>
@@ -103,9 +141,16 @@
     <!-- Footer -->
     <footer class="bg-gradient-to-r from-gray-900 to-black py-10 mt-auto">
         <div class="container mx-auto px-4 text-center">
-            <p class="text-gray-400">&copy; 2025 <span class="text-green-400 font-bold">Ctech</span> - Todos los derechos reservados</p>
+            <p class="text-gray-400">© 2025 <span class="text-green-400 font-bold">Ctech</span> - Todos los derechos reservados</p>
             <p class="text-sm text-gray-500 mt-2">Laptops • PCs Gamer • Periféricos • Accesorios</p>
         </div>
     </footer>
+
+    <!-- Componentes invisibles para eventos del carrito (evita fallas) -->
+    @livewire('cart')
+    @livewire('add-to-cart')  <!-- ← Esto escucha el $dispatch('addToCart') del botón -->
+
+    <!-- Livewire Scripts -->
+    @livewireScripts
 </body>
 </html>
