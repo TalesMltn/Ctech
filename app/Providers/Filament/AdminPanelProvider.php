@@ -18,10 +18,10 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
-// AÑADIMOS TUS RESOURCES AQUÍ
+// TUS RESOURCES
 use App\Filament\Resources\CategoriaResource;
 use App\Filament\Resources\ProductoResource;
-use App\Filament\Resources\GrupoCategoriaResource; // ← NUEVO: Grupos principales
+use App\Filament\Resources\GrupoCategoriaResource;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -40,24 +40,28 @@ class AdminPanelProvider extends PanelProvider
             ->brandLogoHeight('5rem')
             ->darkModeBrandLogo(asset('images/logo-dark.png'))
 
-            // REGISTRAMOS TUS RESOURCES MANUALMENTE (así aparecen en el menú)
+            // REGISTRAMOS TUS RESOURCES MANUALMENTE (para controlar orden)
             ->resources([
-                GrupoCategoriaResource::class,   // ← Primero los grupos principales
-                CategoriaResource::class,        // ← Luego las subcategorías
-                ProductoResource::class,         // ← Tus productos
-                // Aquí puedes agregar más en el futuro
+                GrupoCategoriaResource::class,
+                CategoriaResource::class,
+                ProductoResource::class,
             ])
 
+            // ← IMPORTANTE: Descubre automáticamente recursos y páginas
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
+
+            // ← SOLO el Dashboard aquí, NO agregues páginas personalizadas
             ->pages([
                 Pages\Dashboard::class,
             ])
+
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 Widgets\AccountWidget::class,
                 Widgets\FilamentInfoWidget::class,
             ])
+
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
@@ -71,6 +75,6 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-            ]); // ← ¡PUNTO Y COMA CORREGIDO!
+            ]);
     }
 }

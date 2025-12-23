@@ -1,23 +1,20 @@
-<!-- Carrito -->
-<div x-data="{ open: false }" class="relative">
-    <button @click="open = !open" class="flex items-center space-x-2 bg-black hover:bg-gray-800 px-4 py-2.5 rounded-lg transition text-sm font-medium">
-        <i class="fas fa-shopping-cart text-lg"></i>
-        <span>
-            Carrito
-            <span class="text-green-400 font-bold">
-                
-            </span>
-        </span>
-    </button>
+@extends('layouts.app')
 
-    <div x-show="open" @click.away="open = false" class="absolute right-0 mt-2 w-96 bg-gray-800 rounded-lg shadow-2xl z-50 border border-gray-700 overflow-hidden" x-transition>
-        <div class="max-h-96 overflow-y-auto">
-            <livewire:cart-dropdown />
-        </div>
-        <div class="p-4 border-t border-gray-700">
-            <a href="{{ route('carrito') }}" class="block w-full bg-green-600 hover:bg-green-700 text-center py-3 rounded-lg font-bold transition">
-                Ver Carrito Completo
-            </a>
-        </div>
+@section('content')
+    <div class="container mx-auto px-4 py-12">
+        <h1 class="text-5xl font-bold text-center text-green-400 mb-12 neon-glow">Tu Carrito de Compras</h1>
+
+        @if(count($cart) == 0)
+            <div class="text-center py-20 bg-gray-800 rounded-xl">
+                <i class="fas fa-shopping-cart text-8xl text-gray-600 mb-6"></i>
+                <p class="text-3xl text-gray-400 mb-4">Tu carrito está vacío</p>
+                <p class="text-xl text-gray-500 mb-8">Explora el catálogo y agrega productos</p>
+                <a href="{{ route('home') }}" class="bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-lg font-bold text-xl transition hover:shadow-neon transform hover:scale-105">
+                    Seguir Comprando
+                </a>
+            </div>
+        @else
+            <livewire:cart-items />
+        @endif
     </div>
-</div>
+@endsection

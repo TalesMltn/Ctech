@@ -90,11 +90,7 @@
                             <livewire:cart-dropdown />
                         </div>
                         <!-- Botón único "Ver Carrito Completo" -->
-                        <div class="p-4 border-t border-gray-700">
-                            <a href="{{ route('carrito') }}" class="block w-full bg-green-600 hover:bg-green-700 text-center py-3 rounded-lg font-bold transition">
-                                Ver Carrito Completo
-                            </a>
-                        </div>
+                        
                     </div>
                 </div>
 
