@@ -28,6 +28,7 @@ class ManagePaymentQRs extends Page implements HasForms
 
     public function mount(): void
     {
+        // Si ya tiene acceso autorizado en sesión, entra directo
         if (session('qr_access_authorized') === true) {
             $this->authorized = true;
             $this->loadConfig();
@@ -121,7 +122,7 @@ class ManagePaymentQRs extends Page implements HasForms
             $this->loadConfig();
 
             Notification::make()
-                ->title('¡Acceso autorizado!')
+                ->title('¡Acceso autorizado correctamente!')
                 ->success()
                 ->send();
         } else {
@@ -136,32 +137,25 @@ class ManagePaymentQRs extends Page implements HasForms
     public function save(): void
     {
         $data = $this->form->getState();
-    
-        // Asegurar carpeta
+
         $path = storage_path('app/public/pagos/qr');
         if (!is_dir($path)) {
             mkdir($path, 0755, true);
         }
-    
-        // === SIEMPRE actualizar YAPE si hay imagen cargada en el formulario ===
+
+        // Siempre sobrescribir YAPE si hay imagen
         if (isset($data['qr_yape']) && $data['qr_yape']) {
-            Storage::disk('public')->put(
-                'pagos/qr/qr-yape.png',
-                Storage::disk('public')->get($data['qr_yape'])
-            );
+            Storage::disk('public')->put('pagos/qr/qr-yape.png', Storage::disk('public')->get($data['qr_yape']));
         }
         $data['qr_yape'] = 'qr-yape.png';
-    
-        // === SIEMPRE actualizar PLIN si hay imagen cargada en el formulario ===
+
+        // Siempre sobrescribir PLIN si hay imagen
         if (isset($data['qr_plin']) && $data['qr_plin']) {
-            Storage::disk('public')->put(
-                'pagos/qr/qr-plin.png',
-                Storage::disk('public')->get($data['qr_plin'])
-            );
+            Storage::disk('public')->put('pagos/qr/qr-plin.png', Storage::disk('public')->get($data['qr_plin']));
         }
         $data['qr_plin'] = 'qr-plin.png';
-    
-        // Datos limpios para config.json
+
+        // Guardar config.json
         $cleanData = [
             'qr_yape'     => $data['qr_yape'] ?? null,
             'phone_yape'  => $data['phone_yape'] ?? '',
@@ -170,25 +164,24 @@ class ManagePaymentQRs extends Page implements HasForms
             'phone_plin'  => $data['phone_plin'] ?? '',
             'owner_plin'  => $data['owner_plin'] ?? '',
         ];
-    
-        // Guardar config
-        $configFile = storage_path('app/pagos/config.json');
-        file_put_contents($configFile, json_encode($cleanData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
-    
+
+        file_put_contents(storage_path('app/pagos/config.json'), json_encode($cleanData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+
         Notification::make()
-            ->title('¡QR actualizado con éxito! Los cambios se reflejan inmediatamente en el checkout.')
+            ->title('¡QRs actualizados con éxito! Los cambios se ven al instante en el checkout.')
             ->success()
             ->send();
-    }
-
-    public function cancel(): void
-    {
-        redirect()->route('filament.admin.dashboard');
     }
 
     public function logout(): void
     {
         session()->forget('qr_access_authorized');
+        $this->authorized = false;
+        Notification::make()
+            ->title('Sesión cerrada')
+            ->info()
+            ->send();
+
         redirect()->route('filament.admin.dashboard');
     }
 }
