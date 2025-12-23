@@ -43,13 +43,25 @@
         <!-- EDITOR DE QR -->
         <div class="min-h-screen bg-gradient-to-b from-slate-950 to-black py-12 px-4">
             <div class="max-w-6xl mx-auto">
+
+                <!-- BOTÓN CERRAR SESIÓN QR - Esquina superior derecha -->
+                <div class="text-right mb-8">
+                    <button
+                        wire:click="logout"
+                        class="inline-flex items-center gap-3 px-8 py-4 bg-red-600 hover:bg-red-700 text-white rounded-2xl font-bold text-xl transition transform hover:scale-105 shadow-2xl"
+                    >
+                        <i class="fas fa-sign-out-alt text-2xl"></i>
+                        Cerrar Sesión QR
+                    </button>
+                </div>
+
                 <div class="text-center mb-12">
                     <h2 class="text-5xl font-bold text-green-400 neon-glow">Editar QR del Dueño</h2>
                     <p class="text-gray-300 mt-4 text-xl">Configura los métodos de pago visibles para los clientes</p>
                 </div>
 
                 <div class="bg-gray-900 rounded-3xl shadow-2xl p-10 border border-gray-800">
-                    <!-- Aquí renderizamos el formulario Filament directamente -->
+                    <!-- Formulario Filament -->
                     {{ $this->form }}
 
                     <div class="flex flex-col sm:flex-row justify-center gap-8 mt-16">
@@ -82,6 +94,6 @@
         }
     </style>
 
-    <!-- Font Awesome para el ojo de la contraseña -->
+    <!-- Font Awesome para íconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </x-filament-panels::page>

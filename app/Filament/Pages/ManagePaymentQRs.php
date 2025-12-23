@@ -9,6 +9,9 @@ use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\Storage;
+use Livewire\Features\SupportRedirects\Redirector;
+use Illuminate\Http\RedirectResponse;
+use Filament\Facades\Filament;
 
 class ManagePaymentQRs extends Page implements HasForms
 {
@@ -173,15 +176,23 @@ class ManagePaymentQRs extends Page implements HasForms
             ->send();
     }
 
-    public function logout(): void
+    // ← MÉTODO QUE FALTABA: Cancelar
+    public function cancel()
+    {
+        return redirect()->to('/admin');
+    }
+    
+    public function logout()
     {
         session()->forget('qr_access_authorized');
         $this->authorized = false;
+    
         Notification::make()
-            ->title('Sesión cerrada')
+            ->title('Sesión cerrada correctamente')
             ->info()
             ->send();
-
-        redirect()->route('filament.admin.dashboard');
+    
+        return redirect()->to('/admin');
     }
+
 }
