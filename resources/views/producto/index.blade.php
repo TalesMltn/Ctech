@@ -3,7 +3,9 @@
 @section('content')
     <section class="py-20">
         <div class="container mx-auto px-4">
-            <h1 class="text-5xl font-bold text-center text-green-400 mb-12 neon-glow">Todos los Productos</h1>
+            <h1 class="text-5xl font-bold text-center text-green-400 mb-12 neon-glow">
+                Todos los Productos
+            </h1>
 
             <!-- Grid de productos -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
@@ -11,13 +13,9 @@
                     <div class="bg-gray-800 rounded-xl shadow-2xl overflow-hidden hover:shadow-neon transition-all duration-300 transform hover:scale-105">
                         <!-- Imagen del producto -->
                         <div class="relative h-64 bg-gray-700">
-                            @if($producto->imagen)
-                                <img src="{{ asset('storage/productos/' . $producto->imagen) }}" alt="{{ $producto->nombre }}" class="w-full h-full object-cover">
-                            @else
-                                <div class="w-full h-full flex items-center justify-center">
-                                    <i class="fas fa-microchip text-8xl text-gray-600"></i>
-                                </div>
-                            @endif
+                            <img src="{{ $producto->imagen_url }}" 
+                                 alt="{{ $producto->nombre }}" 
+                                 class="w-full h-full object-cover">
                             <!-- Badge de categoría -->
                             <div class="absolute top-4 left-4">
                                 <span class="bg-green-600 text-white px-4 py-2 rounded-full text-sm font-bold shadow-lg">
@@ -29,7 +27,9 @@
                         <!-- Información -->
                         <div class="p-6">
                             <h3 class="text-xl font-bold mb-3 truncate">{{ $producto->nombre }}</h3>
-                            <p class="text-3xl font-bold text-green-400 mb-6">S/. {{ number_format($producto->precio, 2) }}</p>
+                            <p class="text-3xl font-bold text-green-400 mb-6">
+                                S/. {{ number_format($producto->precio, 2) }}
+                            </p>
 
                             <!-- Botón Ver Detalle -->
                             <a href="{{ route('productos.show', $producto->id) }}" 

@@ -64,7 +64,7 @@
                         </label>
                         <input type="tel"
                                name="phone"
-                               placeholder="999999999"
+                               placeholder="999 999 999"
                                required
                                pattern="[0-9]{9}"
                                maxlength="9"

@@ -12,11 +12,9 @@
         <div class="grid md:grid-cols-2 gap-8 mt-8">
             <!-- Imagen del producto -->
             <div class="bg-gray-200 border-2 border-dashed rounded-lg w-full h-96 flex items-center justify-center overflow-hidden">
-                @if($producto->imagen)
-                    <img src="{{ asset('storage/productos/' . $producto->imagen) }}" alt="{{ $producto->nombre }}" class="w-full h-full object-cover">
-                @else
-                    <span class="text-2xl text-gray-500">Imagen del producto</span>
-                @endif
+                <img src="{{ $producto->imagen_url }}" 
+                     alt="{{ $producto->nombre }}" 
+                     class="w-full h-full object-cover">
             </div>
             
             <!-- Información del producto -->
@@ -28,7 +26,7 @@
                     <strong class="font-bold">Stock:</strong> {{ $producto->stock }} unidades disponibles
                 </p>
 
-                <!-- Botón Agregar al Carrito + Mensaje de éxito (COMPLETO Y FUNCIONAL) -->
+                <!-- Botón Agregar al Carrito + Mensaje de éxito -->
                 <div x-data="{ adding: false, success: false }">
                     <button 
                         type="button"
@@ -51,31 +49,26 @@
                                flex items-center justify-center 
                                disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none">
                         
-                        <!-- Estado normal: "Agregar al Carrito" -->
+                        <!-- Estado normal -->
                         <span x-show="!adding && !success" x-transition>
                             <i class="fas fa-cart-plus mr-3"></i> Agregar al Carrito
                         </span>
                         
-                        <!-- Cargando: Spinner -->
+                        <!-- Cargando -->
                         <span x-show="adding" x-transition>
                             <i class="fas fa-spinner fa-spin mr-3"></i> Agregando...
                         </span>
                         
-                        <!-- Éxito: Check verde -->
+                        <!-- Éxito -->
                         <span x-show="success" x-transition class="flex items-center text-green-200">
                             <i class="fas fa-check-circle mr-3 text-green-300"></i> ¡Agregado!
                         </span>
                     </button>
 
-                    <!-- Mensaje adicional grande de éxito (animado y profesional) -->
+                    <!-- Mensaje de éxito grande -->
                     <div 
                         x-show="success"
-                        x-transition:enter="transition ease-out duration-300"
-                        x-transition:enter-start="opacity-0 transform scale-95"
-                        x-transition:enter-end="opacity-100 transform scale-100"
-                        x-transition:leave="transition ease-in duration-200"
-                        x-transition:leave-start="opacity-100 transform scale-100"
-                        x-transition:leave-end="opacity-0 transform scale-95"
+                        x-transition
                         class="mt-6 text-center text-green-800 font-bold text-xl bg-gradient-to-r from-green-100 to-green-200 
                                border-2 border-green-400 rounded-xl py-4 px-8 shadow-lg hover:shadow-neon transform hover:scale-105 transition duration-200">
                         <i class="fas fa-check-circle text-2xl mr-3 text-green-600"></i>

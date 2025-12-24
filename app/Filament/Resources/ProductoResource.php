@@ -42,14 +42,14 @@ class ProductoResource extends Resource
                     ->label('Nombre')
                     ->required()
                     ->maxLength(255)
-                    ->live(onBlur: true) // Mejor rendimiento
+                    ->live(onBlur: true)
                     ->afterStateUpdated(fn (string $state, Forms\Set $set) => $set('slug', Str::slug($state))),
 
                 Forms\Components\TextInput::make('slug')
                     ->label('Slug')
                     ->maxLength(255)
                     ->unique(Producto::class, 'slug', ignoreRecord: true)
-                    ->dehydrated() // ← CLAVE: permite guardar aunque el campo esté vacío en el formulario
+                    ->dehydrated()
                     ->helperText('Se genera automáticamente del nombre. Puedes editarlo si quieres.'),
 
                 Forms\Components\Textarea::make('descripcion')
@@ -109,8 +109,10 @@ class ProductoResource extends Resource
             ->columns([
                 Tables\Columns\ImageColumn::make('imagen')
                     ->label('Imagen')
-                    ->circular()
-                    ->defaultImageUrl(asset('placeholder-producto.jpg')),
+                    ->getStateUsing(fn ($record) => $record->imagen ? asset('storage/' . $record->imagen) : asset('images/placeholder-producto.jpg'))
+                    ->size(80)
+                    ->circular(false)
+                    ->defaultImageUrl(asset('images/placeholder-producto.jpg')),
 
                 Tables\Columns\TextColumn::make('nombre')
                     ->label('Nombre')

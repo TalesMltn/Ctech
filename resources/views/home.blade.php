@@ -112,9 +112,9 @@
                 <div class="bg-gray-900 rounded-xl shadow-xl hover:shadow-neon transition-all overflow-hidden">
                     <div class="absolute top-3 left-3 bg-red-600 text-white px-3 py-1.5 rounded-lg text-sm font-bold z-10">OFERTA</div>
                     
-                    <img src="{{ $producto->imagen ?? 'https://via.placeholder.com/400x300?text=Oferta+Ctech' }}" 
-                         alt="{{ $producto->nombre }}" 
-                         class="w-full h-56 object-cover">
+                    <img src="{{ $producto->imagen ? asset('storage/' . $producto->imagen) : 'https://via.placeholder.com/400x300?text=' . urlencode($producto->nombre) }}" 
+     alt="{{ $producto->nombre }}" 
+     class="w-full h-56 object-cover">
 
                     <div class="p-5">
                         <h3 class="text-lg font-bold text-white mb-2 line-clamp-2">{{ $producto->nombre }}</h3>

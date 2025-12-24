@@ -125,14 +125,29 @@
     <main class="flex-1 container mx-auto px-4 py-8">
         @yield('content')
     </main>
+<!-- Footer -->
+<footer class="bg-gradient-to-r from-gray-900 to-black py-10 mt-auto">
+    <div class="container mx-auto px-4 text-center space-y-3">
+        
+        <p class="text-gray-400">
+            © 2025 <span class="text-green-400 font-bold">Ctech</span> - Todos los derechos reservados
+        </p>
 
-    <!-- Footer -->
-    <footer class="bg-gradient-to-r from-gray-900 to-black py-10 mt-auto">
-        <div class="container mx-auto px-4 text-center">
-            <p class="text-gray-400">© 2025 <span class="text-green-400 font-bold">Ctech</span> - Todos los derechos reservados</p>
-            <p class="text-sm text-gray-500 mt-2">Laptops • PCs Gamer • Periféricos • Accesorios</p>
-        </div>
-    </footer>
+        <p class="text-sm text-gray-500">
+            Laptops • PCs Gamer • Periféricos • Accesorios
+        </p>
+
+        <!-- Ubicación -->
+        <a 
+            href="https://maps.app.goo.gl/xXw9wVkSYtgEQDxTA"
+            target="_blank"
+            class="inline-flex items-center justify-center gap-2 text-sm text-green-400 hover:text-green-300 transition"
+        >
+            📍🕹️ Ver ubicación de la tienda🕹️📍
+        </a>
+
+    </div>
+</footer>
 
     <!-- Componentes invisibles -->
     @livewire('add-to-cart')     <!-- Único que agrega productos -->

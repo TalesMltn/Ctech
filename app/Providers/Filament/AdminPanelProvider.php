@@ -22,7 +22,8 @@ use Illuminate\View\Middleware\ShareErrorsFromSession;
 use App\Filament\Resources\CategoriaResource;
 use App\Filament\Resources\ProductoResource;
 use App\Filament\Resources\GrupoCategoriaResource;
-
+use App\Filament\Resources\ConsultaResource; // ← AÑADIDO
+use App\Filament\Resources\PedidoResource;
 class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
@@ -45,13 +46,15 @@ class AdminPanelProvider extends PanelProvider
                 GrupoCategoriaResource::class,
                 CategoriaResource::class,
                 ProductoResource::class,
+                ConsultaResource::class,
+                PedidoResource::class, 
             ])
 
-            // ← IMPORTANTE: Descubre automáticamente recursos y páginas
+            // ← Descubre automáticamente cualquier otro resource futuro (opcional, pero útil)
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
 
-            // ← SOLO el Dashboard aquí, NO agregues páginas personalizadas
+            // ← SOLO el Dashboard aquí
             ->pages([
                 Pages\Dashboard::class,
             ])
